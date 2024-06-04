@@ -1,6 +1,7 @@
 package com.example.appexample1
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,8 +38,24 @@ class MainActivity : ComponentActivity() {
 fun AppContent() {
     Scaffold(
         topBar = { AppBar() },
-        content = { paddingValues -> Content(paddingValues) }
+        content = { paddingValues -> Content(paddingValues) },
+        floatingActionButton = { Fab() },
+        floatingActionButtonPosition = FabPosition.End
     )
+}
+
+@Composable
+fun Fab() {
+    val context = LocalContext.current
+    FloatingActionButton(onClick = {
+
+        Toast.makeText(context, "Suscribite", Toast.LENGTH_SHORT).show()
+    }) {
+        Text(
+            text = "X",
+            color = Color.White,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
