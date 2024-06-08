@@ -2,6 +2,8 @@
 
 Este proyecto es una implementación de una calculadora básica utilizando Jetpack Compose, el moderno toolkit de UI declarativa para Android. 
 
+<img src="https://raw.githubusercontent.com/Joel-Ramos-Quiroz/AppEjercicioCompose/main/Calculadora.png" width="900" alt="Captura de pantalla 1">
+
 ## Características
 
 * **Interfaz de usuario intuitiva y atractiva** construida con componentes Material Design.
@@ -28,15 +30,10 @@ Este proyecto es una implementación de una calculadora básica utilizando Jetpa
 
 ¡Las contribuciones son bienvenidas! Si tienes alguna idea para mejorar la calculadora, no dudes en abrir un pull request.
 
-## Capturas de pantalla
-
-<!-- Agrega aquí las rutas a tus imágenes -->
-<img src="https://raw.githubusercontent.com/Joel-Ramos-Quiroz/AppEjercicioCompose/main/Calculadora.png" width="300" alt="Captura de pantalla 1">
-
-## Demo
+## Video Demo
 
 <!-- Agrega aquí la URL de tu video demo -->
-[![Demo](https://github.com/Joel-Ramos-Quiroz/AppEjercicioCompose/blob/1b6846c8146df722c61b42b4985872a38ff5b618/DemoCalculadora.mp4)
+https://github.com/Joel-Ramos-Quiroz/AppEjercicioCompose/blob/1b6846c8146df722c61b42b4985872a38ff5b618/DemoCalculadora.mp4
 
 
 
