@@ -1,7 +1,6 @@
-package com.example.appexample1
+package com.example.appexample1.ui
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,18 +10,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.appexample1.R
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,28 +37,40 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
 fun AppContent() {
+    var counter by rememberSaveable { mutableStateOf(0) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope() // Agregar scope
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = { AppBar() },
-        content = { paddingValues -> Content(paddingValues) },
-        floatingActionButton = { Fab() },
+        content = { paddingValues ->
+            Content(paddingValues, counter) { counter++ }
+        },
+        floatingActionButton = {
+            Row(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FabSumar {
+                    counter++
+                    scope.launch { // Usar scope para lanzar corrutina
+                        snackbarHostState.showSnackbar("¡Valor sumado!")
+                    }
+                }
+                FabRestar {
+                    counter--
+                    scope.launch { // Usar scope para lanzar corrutina
+                        snackbarHostState.showSnackbar("¡Valor restado!")
+                    }
+                }
+            }
+        },
         floatingActionButtonPosition = FabPosition.End
     )
-}
-
-@Composable
-fun Fab() {
-    val context = LocalContext.current
-    FloatingActionButton(onClick = {
-
-        Toast.makeText(context, "Suscribite", Toast.LENGTH_SHORT).show()
-    }) {
-        Text(
-            text = "X",
-            color = Color.White,
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,8 +83,10 @@ fun AppBar() {
 }
 
 @Composable
-fun Content(paddingValues: PaddingValues) {
-    var counter by rememberSaveable { mutableStateOf(0) }
+fun Content(
+    paddingValues: PaddingValues, counter: Int,
+    onCounterClick: () -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -79,11 +96,34 @@ fun Content(paddingValues: PaddingValues) {
     ) {
         item {
             HeaderImage()
-            CounterRow(counter) { counter++ }
+            CounterRow(counter, onCounterClick)
             InfoText()
             ExperienceText()
             HorizontalTextRow()
         }
+    }
+}
+
+
+@Composable
+fun FabSumar(onFabClick: () -> Unit) {
+    ExtendedFloatingActionButton(
+        onClick = onFabClick,
+        icon = { Icon(Icons.Filled.Add, contentDescription = "Sumar") },
+        text = { Text("Sumar") },
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary
+    )
+}
+
+@Composable
+fun FabRestar(onFabClick: () -> Unit) {
+    FloatingActionButton(
+        onClick = onFabClick,
+        containerColor = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.onSecondary
+    ) {
+        Icon(Icons.Filled.Delete, contentDescription = "Restar")
     }
 }
 
