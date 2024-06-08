@@ -1,5 +1,6 @@
 package com.example.appexample1.ui
 
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +20,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Label
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -40,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.appexample1.R
-import com.example.appexample1.ui.ui.theme.AppExample1Theme
+import com.example.appexample1.ui.theme.AppExample1Theme
 
 // Define una actividad de Android llamada CalculadoraActivity
 class CalculadoraActivity : ComponentActivity() {
@@ -55,52 +58,59 @@ class CalculadoraActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class) // Anotación para optar por usar API experimental de Material 3
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculadoraApp() {
     // Variables de estado para la entrada de texto y la lógica de la calculadora
     val input = rememberSaveable { mutableStateOf("") }
     val operador = rememberSaveable { mutableStateOf<String?>(null) }
     val operandoAnterior = rememberSaveable { mutableStateOf<Double?>(null) }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                // Define el título de la barra superior
-                title = {
-                    Text(
-                        text = "CALCULADORA!", // Título del TopAppBar
-                        modifier = Modifier
-                            .fillMaxSize() // Ocupa todo el tamaño disponible
-                            .wrapContentSize(Alignment.Center) // Centra el texto tanto vertical como horizontalmente
-                    )
-                },
-                // Establece el color de fondo del TopAppBar
-                modifier = Modifier.background(colorResource(id = R.color.teal_700))
-            )
-        }
-    ) { innerPadding ->
-        // Añade el resto del contenido de la app, usando innerPadding para evitar superposición con la barra de la app
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            // Caja de texto para mostrar y actualizar la entrada del usuario
-            TextField(
-                value = input.value,
-                textStyle = TextStyle(textAlign = TextAlign.Right, fontSize = 25.sp, fontStyle = FontStyle.Normal ,fontWeight = FontWeight.Bold),
-                onValueChange = { newValue -> input.value = newValue },
+    MaterialTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    // Define el título de la barra superior
+                    title = {
+                        Text(
+                            text = "\uD83D\uDC4B CALCULADORA! \uD83D\uDCAA", // Título del TopAppBar
+                            modifier = Modifier
+                                .fillMaxSize() // Ocupa todo el tamaño disponible
+                                .wrapContentSize(Alignment.Center) // Centra el texto tanto vertical como horizontalmente
+                        )
+                    },
+                    // Establece el color de fondo del TopAppBar
+                    modifier = Modifier.background(Color.Black)
+                )
+            }
+        ) { innerPadding ->
+            // Añade el resto del contenido de la app, usando innerPadding para evitar superposición con la barra de la app
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(Color.Black)
+            ) {
+                // Caja de texto para mostrar y actualizar la entrada del usuario
+                TextField(
+                    value = input.value,
+                    textStyle = TextStyle(
+                        textAlign = TextAlign.Right,
+                        fontSize = 25.sp,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    onValueChange = { newValue -> input.value = newValue },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
 
-            // Llama a la función que muestra una cuadrícula de botones
-            EjemploDeCuadricula { boton ->
-                // Procesa la operación al hacer clic en un botón
-                manejarBoton(boton, input, operador, operandoAnterior)
+                // Llama a la función que muestra una cuadrícula de botones
+                EjemploDeCuadricula { boton ->
+                    // Procesa la operación al hacer clic en un botón
+                    manejarBoton(boton, input, operador, operandoAnterior)
+                }
             }
         }
     }
@@ -108,6 +118,7 @@ fun CalculadoraApp() {
 
 @Composable
 fun EjemploDeCuadricula(onButtonClick: (String) -> Unit) {
+    // Lista de los textos que se mostrarán en los botones de la calculadora
     val botones = listOf(
         "7", "8", "9", "/",
         "4", "5", "6", "*",
@@ -116,55 +127,67 @@ fun EjemploDeCuadricula(onButtonClick: (String) -> Unit) {
         "C", "", "", "="
     )
 
+    // Crea una cuadrícula vertical con desplazamiento (LazyVerticalGrid)
     LazyVerticalGrid(
-        columns = GridCells.Fixed(4), // Define 4 columnas
+        columns = GridCells.Fixed(4), // Define 4 columnas en la cuadrícula
         verticalArrangement = Arrangement.spacedBy(4.dp), // Espaciado vertical de 4dp entre elementos
         horizontalArrangement = Arrangement.spacedBy(4.dp), // Espaciado horizontal de 4dp entre elementos
-        modifier = Modifier.fillMaxSize() // Ocupa todo el tamaño disponible
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black) // La cuadrícula ocupa todo el espacio disponible
+
     ) {
+        // Itera sobre la lista de botones y crea un elemento de cuadrícula para cada uno
         items(botones) { boton ->
-            val buttonColors = when (boton) {
-                "/", "*", "-", "+", "=", ".","C" -> {
-                    ButtonDefaults.buttonColors(
-                        containerColor = Color.Cyan, // Color diferente para el botón de operaciones
-                        contentColor = Color.Black
-                    )
-                }
-                "X" -> {
-                    ButtonDefaults.buttonColors(
-                        containerColor = Color.Red, // Color diferente para el botón de división
-                        contentColor = Color.White
-                    )
-                }
-
-                "" -> {
-                    ButtonDefaults.buttonColors(
-                        containerColor = Color.White, // Color diferente para el botón de división
-                        contentColor = Color.White
-                    )
-                }
-                else -> {
-                    ButtonDefaults.buttonColors(
-                        containerColor = Color.DarkGray, // Color para botones numéricos
-                        contentColor = Color.White
-                    )
-                }
-            }
-
-            Button(
-                onClick = { onButtonClick(boton) }, // Llama a onButtonClick al hacer clic en el botón
-                colors = buttonColors,
-                modifier = Modifier
-                    .aspectRatio(1f) // Para que los botones sean cuadrados
-            ) {
-                Text(text = boton, fontSize = 21.sp)
-            }
+            CalculatorButton(boton, onButtonClick) // Llama a la función que crea un botón
         }
     }
 }
 
+// Función Composable que crea un botón de la calculadora
+@Composable
+fun CalculatorButton(buttonText: String, onButtonClick: (String) -> Unit) {
+    // Define los colores del botón según el texto que contiene
+    val buttonColors = when (buttonText) {
+        "/", "*", "-", "+", "=", ".", "C" -> ButtonDefaults.buttonColors( // Botones de operación (cyan)
+            containerColor = colorResource(id = R.color.orange),
+            contentColor = Color.White
+        )
+
+        "X" -> ButtonDefaults.buttonColors( // Botón de multiplicación (rojo)
+            containerColor = Color.Yellow,
+            contentColor = Color.Black
+        )
+
+        "" -> ButtonDefaults.buttonColors( // Botón vacío (blanco)
+            containerColor = Color.Black,
+            contentColor = Color.Black
+        )
+
+        else -> ButtonDefaults.buttonColors( // Botones numéricos (gris oscuro)
+            containerColor = colorResource(id = R.color.botongris),
+            contentColor = Color.White
+        )
+    }
+
+    // Crea un botón con los colores definidos y el texto correspondiente
+    Button(
+        onClick = { onButtonClick(buttonText) }, // Llama a la función onButtonClick cuando se hace clic
+        colors = buttonColors, // Aplica los colores definidos
+        modifier = Modifier.aspectRatio(1f) // Asegura que el botón sea cuadrado
+    ) {
+        Text(text = buttonText, fontSize = 25.sp) // Muestra el texto del botón
+    }
+}
+
+
 // Función para manejar los clics de los botones
-fun manejarBoton(boton: String, input: MutableState<String>, operador: MutableState<String?>, operandoAnterior: MutableState<Double?>) {
+fun manejarBoton(
+    boton: String,
+    input: MutableState<String>,
+    operador: MutableState<String?>,
+    operandoAnterior: MutableState<Double?>
+) {
     when (boton) {
         in "0".."9" -> input.value += boton
         "+", "-", "*", "/" -> {
@@ -188,6 +211,7 @@ fun manejarBoton(boton: String, input: MutableState<String>, operador: MutableSt
                 input.value = ""
             }
         }
+
         "." -> if (!input.value.contains(".")) input.value += "."
         "=" -> {
             // Calcula el resultado final si hay un operador y un operando actual
@@ -205,6 +229,7 @@ fun manejarBoton(boton: String, input: MutableState<String>, operador: MutableSt
                 operandoAnterior.value = null // Restablece el operando anterior
             }
         }
+
         "C" -> {
             // Limpiar la entrada y restablecer operador y operando anterior
             input.value = ""
@@ -213,7 +238,6 @@ fun manejarBoton(boton: String, input: MutableState<String>, operador: MutableSt
         }
     }
 }
-
 
 
 // Función de vista previa para mostrar cómo se verá la UI en el editor

@@ -8,4 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bacgrou">#252525</color>
+    <color name="orange">#CA3401</color>
+    <color name="botongris">#333333</color>
+
 </resources>
